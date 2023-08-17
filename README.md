@@ -151,12 +151,12 @@ Default: `test`
 
 ### `output-formatter`
 
-What tool to use to format the output of `xcodebuild` (`xcpretty` or `xcbeatify`).<br/>
+What tool to use to format the output of `xcodebuild` (`xcpretty` or `xcbeautify`).<br/>
 Default: `xcpretty`
 
 ### `colored-output`
 
-Whether `xcpretty` or `xcbeatify` should use colored output (e.g. `xcpretty --color`).<br/>
+Whether `xcpretty` or `xcbeautify` should use colored output (e.g. `xcpretty --color`).<br/>
 Default: `true`
 
 

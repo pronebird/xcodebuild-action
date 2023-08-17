@@ -24,7 +24,7 @@ jobs:
                 TestProjectTests/FailingTests/testFailing1
                 TestProjectTests/FailingTests/testFailing2
         action: [ test ]
-        output-formatter: [ 'xcpretty', 'xcbeatify', false ]
+        output-formatter: [ 'xcpretty', 'xcbeautify', false ]
         include:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
@@ -33,7 +33,7 @@ jobs:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            output-formatter: 'xcbeatify'
+            output-formatter: 'xcbeautify'
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
@@ -83,7 +83,7 @@ jobs:
               TestProjectTests/FailingTests/testFailing1
               TestProjectTests/FailingTests/testFailing2
         action: [ test ]
-        output-formatter: [ 'xcpretty', 'xcbeatify', false ]
+        output-formatter: [ 'xcpretty', 'xcbeautify', false ]
         include:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
@@ -92,7 +92,7 @@ jobs:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            output-formatter: 'xcbeatify'
+            output-formatter: 'xcbeautify'
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
