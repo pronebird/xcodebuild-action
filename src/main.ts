@@ -243,7 +243,7 @@ async function main() {
 
     const outputFormatter = core.getInput('output-formatter', { required: true });
 
-    const useOutputFormatter = outputFormatter !== false
+    const useOutputFormatter = outputFormatter !== 'false'
     const useColoredOutput = core.getBooleanInput('colored-output', { required: useOutputFormatter }) ;
 
     const dryRun = core.isDebug() && core.getInput('dry-run') == 'true';
@@ -259,12 +259,22 @@ async function main() {
             args: useColoredOutput ? [{ name: '--color' }] : [] 
         };
     } else if (outputFormatter === 'xcbeautify') {
-        outputFormatterInv = { 
-            tool: 'xcbeautify', 
-            args: [{ name: '--is-ci' }, { name: '--renderer', value: 'github-actions' }] + 
-                ( !useColoredOutput ? [{ name: '--disable-colored-output' }] : [] )
+        let renderer = 'github-actions'
+        let args: ICommandArgument[] = [
+            { name: '--is-ci' },
+            { 
+                name: '--renderer', 
+                value: { originalValue: renderer, resolvedValue: renderer }
+            }
+        ]
+        if (!useColoredOutput) {
+            args.push({ name: '--disable-colored-output' })
+        }
+        outputFormatterInv = {
+            tool: 'xcbeautify',
+            args: args
         };
-    } else if (outputFormatter === false) {
+    } else if (outputFormatter === 'false') {
         outputFormatterInv = null;
     } else {
         throw new Error('Supported output formatters are: xcpretty, xcbeautify');
