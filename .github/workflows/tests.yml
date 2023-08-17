@@ -2,12 +2,13 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, add-xcbeautify ]
     paths: 
       - 'dist/*.js'
       - '.github/workflows/tests.yml'
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   test-project:
