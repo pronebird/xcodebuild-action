@@ -274,7 +274,7 @@ async function main() {
             tool: 'xcbeautify',
             args: args
         };
-    } else if (outputFormatter === 'false') {
+    } else if (outputFormatter == 'false') {
         outputFormatterInv = null;
     } else {
         throw new Error('Supported output formatters are: xcpretty, xcbeautify');
