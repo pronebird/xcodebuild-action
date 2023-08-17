@@ -49,7 +49,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         with:
           project: ${{ env.INPUT_PROJECT }}
@@ -108,7 +108,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         with:
           workspace: ${{ env.INPUT_WORKSPACE }}
@@ -150,7 +150,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         with:
           spm-package: ${{ env.INPUT_SPM_PACKAGE }}
@@ -208,7 +208,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         id: xcodebuild-master
         with:
@@ -391,7 +391,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         id: xcodebuild-master
         with:
@@ -577,7 +577,7 @@ jobs:
       - name: Generate action code
         if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/generate-action-code
-      - uses: sersoft-gmbh/xcodebuild-action@master
+      - uses: pronebird/xcodebuild-action@add-xcbeautify
         if: ${{ github.event_name == 'push' }}
         id: xcodebuild-master
         with:
