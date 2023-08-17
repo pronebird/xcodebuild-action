@@ -108,12 +108,12 @@ inputs:
     description: The action to perform (e.g. build, test, ...). Can also contain multiple actions.
     required: true
     default: test
-  use-xcpretty:
-    description: Whether the output of xcodebuild should be forwarded to xcpretty.
+  output-formatter:
+    description: Which tool to use to process output of xcodebuild (e.g. xcpretty or xcbeautify)
     required: true
-    default: 'true'
-  xcpretty-colored-output:
-    description: Whether xcpretty should use colored output (e.g. `xcpretty --color`).
+    default: 'xcpretty'
+  colored-output:
+    description: Whether ouput formatter should use colored output (e.g. `xcpretty --color`).
     required: true
     default: 'true'
   dry-run:

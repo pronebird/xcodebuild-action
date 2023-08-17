@@ -23,16 +23,20 @@ jobs:
                 TestProjectTests/FailingTests/testFailing1
                 TestProjectTests/FailingTests/testFailing2
         action: [ test ]
-        use-xcpretty: [ true, false ]
+        output-formatter: [ 'xcpretty', 'xcbeatify', false ]
         include:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            use-xcpretty: true
+            output-formatter: 'xcpretty'
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            use-xcpretty: false
+            output-formatter: 'xcbeatify'
+          - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
+            skip-testing: ''
+            action: build
+            output-formatter: false
     env:
       INPUT_PROJECT: __test__/TestProject/TestProject.xcodeproj
       INPUT_SCHEME: TestProject
@@ -52,7 +56,7 @@ jobs:
           destination: ${{ matrix.destination }}
           skip-testing: ${{ matrix.skip-testing }}
           action: ${{ matrix.action }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -61,7 +65,7 @@ jobs:
           destination: ${{ matrix.destination }}
           skip-testing: ${{ matrix.skip-testing }}
           action: ${{ matrix.action }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - name: Check for derived data
         run: ls ~/Library/Developer/Xcode/DerivedData/ | grep -q '^TestProject.*'
 
@@ -78,16 +82,20 @@ jobs:
               TestProjectTests/FailingTests/testFailing1
               TestProjectTests/FailingTests/testFailing2
         action: [ test ]
-        use-xcpretty: [ true, false ]
+        output-formatter: [ 'xcpretty', 'xcbeatify', false ]
         include:
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            use-xcpretty: true
+            output-formatter: 'xcpretty'
           - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
             skip-testing: ''
             action: build
-            use-xcpretty: false
+            output-formatter: 'xcbeatify'
+          - destination: platform=watchOS Simulator,OS=latest,name=Apple Watch Series 8 (45mm)
+            skip-testing: ''
+            action: build
+            output-formatter: false
     env:
       INPUT_WORKSPACE: __test__/TestProject/TestProject.xcworkspace
       INPUT_SCHEME: TestProject
@@ -107,7 +115,7 @@ jobs:
           destination: ${{ matrix.destination }}
           skip-testing: ${{ matrix.skip-testing }}
           action: ${{ matrix.action }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -116,7 +124,7 @@ jobs:
           destination: ${{ matrix.destination }}
           skip-testing: ${{ matrix.skip-testing }}
           action: ${{ matrix.action }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - name: Check for derived data
         run: ls ~/Library/Developer/Xcode/DerivedData/ | grep -q '^TestProject.*'
 
@@ -128,7 +136,7 @@ jobs:
         destination:
           - platform=macOS
           - platform=iOS Simulator,OS=latest,name=iPhone 14 Pro
-        use-xcpretty: [ true, false ]
+        output-formatter: [ true, false ]
     env:
       INPUT_SPM_PACKAGE: __test__/TestPackage
       INPUT_SCHEME: TestPackage
@@ -148,7 +156,7 @@ jobs:
           scheme: ${{ env.INPUT_SCHEME }}
           destination: ${{ matrix.destination }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -156,7 +164,7 @@ jobs:
           scheme: ${{ env.INPUT_SCHEME }}
           destination: ${{ matrix.destination }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
+          output-formatter: ${{ matrix.output-formatter }}
       - name: Check for derived data
         run: ls ~/Library/Developer/Xcode/DerivedData/ | grep -q '^TestPackage.*'
 
@@ -165,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        use-xcpretty: [ true, false ]
+        output-formatter: [ true, false ]
     env:
       INPUT_PROJECT: TestProject.xcodeproj
       INPUT_TARGET: SomeTarget
@@ -185,7 +193,7 @@ jobs:
       INPUT_SKIP_TESTING_1: that
       INPUT_BUILD_SETTINGS: ABC=DEF
       INPUT_ACTION: action
-      INPUT_XCPRETTY_COLORED_OUTPUT: 'true'
+      INPUT_COLORED_OUTPUT: 'true'
     steps:
       - if: ${{ github.event_name == 'pull_request' && env.RUNNER_DEBUG != 1 }}
         run: echo 'RUNNER_DEBUG=1' >> "${GITHUB_ENV}"
@@ -233,8 +241,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
@@ -270,8 +278,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - id: xcodebuild
         env:
@@ -290,7 +298,7 @@ jobs:
           fi
       - name: Check executed command
         env:
-          USE_XCPRETTY: ${{ matrix.use-xcpretty }}
+          OUTPUT_FORMATTER: ${{ matrix.output-formatter }}
           UNPROCESSED_COMMAND: ${{ steps.xcodebuild.outputs.unprocessed-command }}
           EXECUTED_COMMAND: ${{ steps.xcodebuild.outputs.executed-command }}
         run: |
@@ -324,10 +332,16 @@ jobs:
           -allowProvisioningDeviceRegistration \
           ${INPUT_BUILD_SETTINGS} \
           ${INPUT_ACTION}"
-          if [ "${USE_XCPRETTY}" == 'true' ]; then
+          if [ "${OUTPUT_FORMATTER}" == 'xcpretty' ]; then
             EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcpretty"
-            if [ "${INPUT_XCPRETTY_COLORED_OUTPUT}" == 'true' ]; then
+            if [ "${INPUT_COLORED_OUTPUT}" == 'true' ]; then
               EXPECTED_COMMAND="${EXPECTED_COMMAND} --color"
+            fi
+          fi
+          if [ "${OUTPUT_FORMATTER}" == 'xcbeautify' ]; then
+            EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcbeautify --is-ci --renderer github-actions"
+            if [ "${INPUT_COLORED_OUTPUT}" != 'true' ]; then
+              EXPECTED_COMMAND="${EXPECTED_COMMAND} --disable-colored-output"
             fi
           fi
           ACTUAL_COMMAND="${UNPROCESSED_COMMAND}"
@@ -341,7 +355,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        use-xcpretty: [ true, false ]
+        output-formatter: [ true, false ]
     env:
       INPUT_WORKSPACE: TestWorkspace.xcworkspace
       INPUT_SCHEME: TestScheme
@@ -362,7 +376,7 @@ jobs:
       INPUT_SKIP_TESTING_1: that
       INPUT_BUILD_SETTINGS: ABC=DEF
       INPUT_ACTION: action
-      INPUT_XCPRETTY_COLORED_OUTPUT: 'true'
+      INPUT_COLORED_OUTPUT: 'true'
     steps:
       - if: ${{ github.event_name == 'pull_request' && env.RUNNER_DEBUG != 1 }}
         run: echo 'RUNNER_DEBUG=1' >> "${GITHUB_ENV}"
@@ -411,8 +425,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
@@ -449,8 +463,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - id: xcodebuild
         env:
@@ -469,7 +483,7 @@ jobs:
           fi
       - name: Check executed command
         env:
-          USE_XCPRETTY: ${{ matrix.use-xcpretty }}
+          OUTPUT_FORMATTER: ${{ matrix.output-formatter }}
           UNPROCESSED_COMMAND: ${{ steps.xcodebuild.outputs.unprocessed-command }}
           EXECUTED_COMMAND: ${{ steps.xcodebuild.outputs.executed-command }}
         run: |
@@ -504,10 +518,16 @@ jobs:
           -allowProvisioningDeviceRegistration \
           ${INPUT_BUILD_SETTINGS} \
           ${INPUT_ACTION}"
-          if [ "${USE_XCPRETTY}" == 'true' ]; then
+          if [ "${OUTPUT_FORMATTER}" == 'xcpretty' ]; then
             EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcpretty"
-            if [ "${INPUT_XCPRETTY_COLORED_OUTPUT}" == 'true' ]; then
+            if [ "${INPUT_COLORED_OUTPUT}" == 'true' ]; then
               EXPECTED_COMMAND="${EXPECTED_COMMAND} --color"
+            fi
+          fi
+          if [ "${OUTPUT_FORMATTER}" == 'xcbeautify' ]; then
+            EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcbeautify --is-ci --renderer github-actions"
+            if [ "${INPUT_COLORED_OUTPUT}" != 'true' ]; then
+              EXPECTED_COMMAND="${EXPECTED_COMMAND} --disable-colored-output"
             fi
           fi
           ACTUAL_COMMAND="${UNPROCESSED_COMMAND}"
@@ -521,7 +541,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        use-xcpretty: [ true, false ]
+        output-formatter: [ true, false ]
     env:
       INPUT_SPM_PACKAGE: /path/to/TestPackage
       INPUT_SCHEME: TestScheme
@@ -542,7 +562,7 @@ jobs:
       INPUT_SKIP_TESTING_1: that
       INPUT_BUILD_SETTINGS: ABC=DEF
       INPUT_ACTION: action
-      INPUT_XCPRETTY_COLORED_OUTPUT: 'true'
+      INPUT_COLORED_OUTPUT: 'true'
     steps:
       - if: ${{ github.event_name == 'pull_request' && env.RUNNER_DEBUG != 1 }}
         run: echo 'RUNNER_DEBUG=1' >> "${GITHUB_ENV}"
@@ -591,8 +611,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - uses: './'
         if: ${{ github.event_name == 'pull_request' }}
@@ -629,8 +649,8 @@ jobs:
           allow-provisioning-device-registration: true
           build-settings: ${{ env.INPUT_BUILD_SETTINGS }}
           action: ${{ env.INPUT_ACTION }}
-          use-xcpretty: ${{ matrix.use-xcpretty }}
-          xcpretty-colored-output: ${{ env.INPUT_XCPRETTY_COLORED_OUTPUT }}
+          output-formatter: ${{ matrix.output-formatter }}
+          colored-output: ${{ env.INPUT_COLORED_OUTPUT }}
           dry-run: true
       - id: xcodebuild
         env:
@@ -649,7 +669,7 @@ jobs:
           fi
       - name: Check executed command
         env:
-          USE_XCPRETTY: ${{ matrix.use-xcpretty }}
+          OUTPUT_FORMATTER: ${{ matrix.output-formatter }}
           UNPROCESSED_COMMAND: ${{ steps.xcodebuild.outputs.unprocessed-command }}
           EXECUTED_COMMAND: ${{ steps.xcodebuild.outputs.executed-command }}
         run: |
@@ -684,10 +704,16 @@ jobs:
           -allowProvisioningDeviceRegistration \
           ${INPUT_BUILD_SETTINGS} \
           ${INPUT_ACTION}"
-          if [ "${USE_XCPRETTY}" == 'true' ]; then
+          if [ "${OUTPUT_FORMATTER}" == 'xcpretty' ]; then
             EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcpretty"
-            if [ "${INPUT_XCPRETTY_COLORED_OUTPUT}" == 'true' ]; then
+            if [ "${INPUT_COLORED_OUTPUT}" == 'true' ]; then
               EXPECTED_COMMAND="${EXPECTED_COMMAND} --color"
+            fi
+          fi
+          if [ "${OUTPUT_FORMATTER}" == 'xcbeautify' ]; then
+            EXPECTED_COMMAND="${EXPECTED_COMMAND} | xcbeautify --is-ci --renderer github-actions"
+            if [ "${INPUT_COLORED_OUTPUT}" != 'true' ]; then
+              EXPECTED_COMMAND="${EXPECTED_COMMAND} --disable-colored-output"
             fi
           fi
           EXPECTED_COMMAND="${EXPECTED_COMMAND} ; popd"

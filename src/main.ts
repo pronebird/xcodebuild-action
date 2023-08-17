@@ -78,12 +78,13 @@ function allArgumentStrings(args: ICommandArgument[],
     return args.flatMap(a => argumentStrings(a, useResolvedValue, escapeValue));
 }
 
-interface IXcPrettyInvocation {
+interface IOutputFormatterInvocation {
+    tool: 'xcpretty' | 'xcbeautify'
     args: ICommandArgument[];
 }
 
-async function runXcodebuild(args: ICommandArgument[], xcprettyInv?: IXcPrettyInvocation | null) {
-    const xcodebuildOut: StdioNull | StdioPipe = xcprettyInv ? 'pipe' : process.stdout;
+async function runXcodebuild(args: ICommandArgument[], outputFormatterInv?: IOutputFormatterInvocation | null) {
+    const xcodebuildOut: StdioNull | StdioPipe = outputFormatterInv ? 'pipe' : process.stdout;
     const xcodebuild = spawn('xcodebuild', allArgumentStrings(args), {
         stdio: ['inherit', xcodebuildOut, process.stderr],
     });
@@ -97,8 +98,8 @@ async function runXcodebuild(args: ICommandArgument[], xcprettyInv?: IXcPrettyIn
             }
         });
     });
-    if (xcprettyInv) {
-        const xcpretty = spawn('xcpretty', allArgumentStrings(xcprettyInv.args), {
+    if (outputFormatterInv) {
+        const xcpretty = spawn(outputFormatterInv.tool, allArgumentStrings(outputFormatterInv.args), {
             stdio: ['pipe', process.stdout, process.stderr],
         });
         xcodebuild.stdout?.pipe(xcpretty.stdin);
@@ -240,8 +241,10 @@ async function main() {
     const action = core.getInput('action', { required: true });
     xcodebuildArgs.push(...action.split(' ').map(v => { return { name: v }; }));
 
-    const useXcpretty = core.getBooleanInput('use-xcpretty', { required: true });
-    const useColoredXCPrettyOutput = core.getBooleanInput('xcpretty-colored-output', { required: useXcpretty }) ;
+    const outputFormatter = core.getInput('output-formatter', { required: true });
+
+    const useOutputFormatter = outputFormatter !== false
+    const useColoredOutput = core.getBooleanInput('colored-output', { required: useOutputFormatter }) ;
 
     const dryRun = core.isDebug() && core.getInput('dry-run') == 'true';
 
@@ -249,20 +252,31 @@ async function main() {
     if (!dryRun && process.platform !== 'darwin')
         throw new Error('This action only supports macOS!');
 
-    let xcPrettyInv: IXcPrettyInvocation | null
-    if (useXcpretty) {
-        xcPrettyInv = { args: useColoredXCPrettyOutput ? [{ name: '--color' }] : [] };
+    let outputFormatterInv: IOutputFormatterInvocation | null
+    if (outputFormatter === 'xcpretty') {
+        outputFormatterInv = { 
+            tool: 'xcpretty', 
+            args: useColoredOutput ? [{ name: '--color' }] : [] 
+        };
+    } else if (outputFormatter === 'xcbeautify') {
+        outputFormatterInv = { 
+            tool: 'xcbeautify', 
+            args: [{ name: '--is-ci' }, { name: '--renderer', value: 'github-actions' }] + 
+                ( !useColoredOutput ? [{ name: '--disable-colored-output' }] : [] )
+        };
+    } else if (outputFormatter === false) {
+        outputFormatterInv = null;
     } else {
-        xcPrettyInv = null;
+        throw new Error('Supported output formatters are: xcpretty, xcbeautify');
     }
     core.endGroup();
 
     await core.group('Composing command', async () => {
         // We "abuse" ICommandArgument here a bit to make it easier to compose both output variants.
         let allCommands: ICommandArgument[] = [{ name: 'xcodebuild' }].concat(xcodebuildArgs);
-        if (xcPrettyInv) {
-            allCommands.push({ name: '|' }, { name: 'xcpretty' });
-            allCommands.push(...xcPrettyInv.args);
+        if (outputFormatterInv) {
+            allCommands.push({ name: '|' }, { name: outputFormatterInv.tool });
+            allCommands.push(...outputFormatterInv.args);
         }
         let unprocessedInvocation = allArgumentStrings(allCommands, false, true);
         let processedInvocation = allArgumentStrings(allCommands, true, true);
@@ -296,7 +310,7 @@ async function main() {
         const cwd = process.cwd();
         if (spmPackage) process.chdir(spmPackage);
         try {
-            await runXcodebuild(xcodebuildArgs, xcPrettyInv);
+            await runXcodebuild(xcodebuildArgs, outputFormatterInv);
         } finally {
             if (spmPackage) process.chdir(cwd);
         }
