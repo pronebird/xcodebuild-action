@@ -542,7 +542,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        output-formatter: [ true, false ]
+        output-formatter: [ 'xcpretty', 'xcbeautify', false ]
     env:
       INPUT_SPM_PACKAGE: /path/to/TestPackage
       INPUT_SCHEME: TestScheme
